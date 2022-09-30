@@ -14,7 +14,12 @@ model Users {
   id          Int           @id @default(autoincrement())
   email       String        @unique
   password    String
+  isGoogle    Boolean @default(false)
+  name        String
+  image       String
   sessions    Sessions[]
+
+  @@map("users")
 }
 
 model Sessions {
@@ -22,4 +27,6 @@ model Sessions {
   user   Users  @relation(fields: [userId], references: [id])
   userId Int
   token  String @unique
+
+  @@map("sessions")
 }

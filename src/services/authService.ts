@@ -8,11 +8,15 @@ import {
 const { sign } = jwt;
 const secretKey = "skljaksdj9983498327453lsldkjf";
 
-async function registerNewUser(email: string, password: string) {
+async function registerNewUser(
+  name: string,
+  email: string,
+  image: string,
+  password: string
+) {
   await validateEmailForRegistration(email);
   const passwordCrypt = await getPasswordCrypt(password);
-  await insertNewUser(email, passwordCrypt);
-  return "ok!";
+  await insertNewUser(name, email, image, passwordCrypt);
 }
 
 async function validateEmailForRegistration(email: string) {
@@ -23,7 +27,6 @@ async function validateEmailForRegistration(email: string) {
       message: "This email is already registered in our database!",
     };
   }
-  return "email ok!";
 }
 
 async function getPasswordCrypt(password: string) {
@@ -36,7 +39,7 @@ async function userLogin(email: string, password: string) {
   await validatePassword(user.password, password);
   const token = await getToken(email, password);
   await insertSession(user.id, token);
-  return "Ok!";
+  return { name: user.name, image: user.image, token };
 }
 
 async function validateEmailForLogin(email: string) {

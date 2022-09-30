@@ -5,8 +5,13 @@ async function findEmail(email: string) {
   return bdEmail;
 }
 
-async function insertNewUser(email: string, password: string) {
-  await client.users.create({ data: { email, password } });
+async function insertNewUser(
+  name: string,
+  email: string,
+  image: string,
+  password: string
+) {
+  await client.users.create({ data: { email, password, image, name } });
 }
 
 async function insertSession(id: number, token: string) {
