@@ -2,6 +2,8 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import {
   findEmail,
+  findSession,
+  deleteSession,
   insertNewUser,
   insertSession,
 } from "../repositories/authRepositorie.js";
@@ -77,4 +79,21 @@ async function getToken(email: string, password: string) {
   return token;
 }
 
-export { registerNewUser, userLogin };
+async function userLogout(token: string) {
+  await validateSession(token);
+  await deleteUserSession(token);
+}
+
+async function validateSession(token: string) {
+  const session = await findSession(token);
+
+  if (!session) {
+    throw { code: 404, message: "Sessions not found!" };
+  }
+}
+
+async function deleteUserSession(token: string) {
+  await deleteSession(token);
+}
+
+export { registerNewUser, userLogin, userLogout };

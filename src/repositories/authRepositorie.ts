@@ -5,6 +5,15 @@ async function findEmail(email: string) {
   return bdEmail;
 }
 
+async function findSession(token: string) {
+  const session = await client.sessions.findFirst({ where: { token } });
+  return session;
+}
+
+async function deleteSession(token: string) {
+  await client.sessions.delete({ where: { token } });
+}
+
 async function insertNewUser(
   name: string,
   email: string,
@@ -18,4 +27,4 @@ async function insertSession(id: number, token: string) {
   await client.sessions.create({ data: { user: { connect: { id } }, token } });
 }
 
-export { findEmail, insertNewUser, insertSession };
+export { findEmail, findSession, deleteSession, insertNewUser, insertSession };
