@@ -9,6 +9,10 @@ import {
 } from "../repositories/authRepositorie.js";
 const { sign } = jwt;
 const secretKey = "skljaksdj9983498327453lsldkjf";
+import { OAuth2Client } from "google-auth-library";
+
+const clientGoogle = new OAuth2Client(process.env.REACT_APP_CLIENT_ID);
+const passwordGoogle = process.env.REACT_APP_GOOGLE_USER_PASSWORD;
 
 async function registerNewUser(
   name: string,
@@ -80,8 +84,8 @@ async function getToken(email: string, password: string) {
 }
 
 async function userLogout(token: string) {
-  await validateSession(token);
-  await deleteUserSession(token);
+  const session = await validateSession(token);
+  await deleteUserSession(session.userId);
 }
 
 async function validateSession(token: string) {
@@ -90,10 +94,37 @@ async function validateSession(token: string) {
   if (!session) {
     throw { code: 404, message: "Sessions not found!" };
   }
+  return session;
 }
 
-async function deleteUserSession(token: string) {
-  await deleteSession(token);
+async function deleteUserSession(userId: number) {
+  await deleteSession(userId);
 }
 
-export { registerNewUser, userLogin, userLogout };
+async function handleGoogleUser(token: string) {
+  const { name, email, picture } = await validateGoogleToken(token);
+
+  const user = await findEmail(email);
+  if (!user) {
+    await registerNewUser(name, email, picture, passwordGoogle);
+  }
+  await googleUserLogin(email, token);
+  return { name, picture };
+}
+
+async function googleUserLogin(email: string, token: string) {
+  const user = await validateEmailForLogin(email);
+  await insertSession(user.id, token);
+}
+
+async function validateGoogleToken(token: string) {
+  const ticket = await clientGoogle.verifyIdToken({
+    idToken: token,
+    audience: process.env.REACT_APP_CLIENT_ID,
+  });
+
+  const userData = ticket.getPayload();
+  return userData;
+}
+
+export { registerNewUser, userLogin, userLogout, handleGoogleUser };

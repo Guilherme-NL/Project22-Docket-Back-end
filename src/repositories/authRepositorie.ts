@@ -10,8 +10,8 @@ async function findSession(token: string) {
   return session;
 }
 
-async function deleteSession(token: string) {
-  await client.sessions.delete({ where: { token } });
+async function deleteSession(userId: number) {
+  await client.sessions.deleteMany({ where: { userId } });
 }
 
 async function insertNewUser(
