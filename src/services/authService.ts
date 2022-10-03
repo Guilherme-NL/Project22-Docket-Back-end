@@ -114,6 +114,7 @@ async function handleGoogleUser(token: string) {
 
 async function googleUserLogin(email: string, token: string) {
   const user = await validateEmailForLogin(email);
+  await validatePassword(user.password, passwordGoogle);
   await insertSession(user.id, token);
 }
 

@@ -18,6 +18,7 @@ model Users {
   name        String
   image       String
   sessions    Sessions[]
+  notes       Notes[]
 
   @@map("users")
 }
@@ -29,4 +30,16 @@ model Sessions {
   token  String @unique
 
   @@map("sessions")
+}
+
+model Notes {
+  id     Int    @id @default(autoincrement())
+  user   Users  @relation(fields: [userId], references: [id])
+  userId Int
+  title  String @unique
+  description String
+  date String
+  time String
+
+  @@map("notes")
 }
