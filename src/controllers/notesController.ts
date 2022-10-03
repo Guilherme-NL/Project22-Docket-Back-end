@@ -14,9 +14,7 @@ export async function addNotes(req: Request, res: Response) {
     });
     res.sendStatus(201);
   } catch (err) {
-    if (err) {
-      res.status(err.code).send(err.message);
-    }
+    res.status(500).send(err);
   }
 }
 
@@ -29,8 +27,20 @@ export async function getNotes(req: Request, res: Response) {
     });
     res.status(200).send(notes);
   } catch (err) {
-    if (err) {
-      res.status(err.code).send(err.message);
-    }
+    res.sendStatus(500);
+  }
+}
+
+export async function deleteNotes(req: Request, res: Response) {
+  const { userId } = res.locals.userSession;
+  const id = Number(req.params.id);
+
+  try {
+    await client.notes.delete({
+      where: { id },
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(500);
   }
 }
