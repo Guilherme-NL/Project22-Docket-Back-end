@@ -19,6 +19,7 @@ model Users {
   image       String
   sessions    Sessions[]
   notes       Notes[]
+  folders     Folders[]
 
   @@map("users")
 }
@@ -36,10 +37,22 @@ model Notes {
   id     Int    @id @default(autoincrement())
   user   Users  @relation(fields: [userId], references: [id])
   userId Int
-  title  String @unique
+  folder Folders @relation(fields: [folderId], references: [id])
+  folderId Int
+  title  String
   description String
   date String
   time String
 
   @@map("notes")
+}
+
+model Folders {
+  id      Int    @id @default(autoincrement())
+  user    Users  @relation(fields: [userId], references: [id])
+  userId  Int
+  name    String @unique
+  notes   Notes[]
+
+  @@map("folders")
 }
