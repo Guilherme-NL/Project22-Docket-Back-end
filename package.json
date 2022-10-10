@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.ts",
+    "build": "tsc && npx prisma migrate deploy",
+    "start": "node dist/index.ts",
     "dev": "nodemon src/index.ts"
   },
   "repository": {
