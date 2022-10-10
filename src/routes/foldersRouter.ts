@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
   addFolder,
-  deleteFolders,
-  getFolder,
+  deleteFolder,
+  getFolders,
 } from "../controllers/foldersController.js";
 import { validateToken } from "../middlewares/validateAuthorization.js";
 import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddleware.js";
@@ -10,7 +10,7 @@ import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddlewar
 const folderRouter = Router();
 
 folderRouter.post("/add/folder", validateToken, addFolder);
-folderRouter.get("/get/folder", validateToken, getFolder);
-folderRouter.delete("/delete/:id/folder", validateToken, deleteFolders);
+folderRouter.get("/get/folder", validateToken, getFolders);
+folderRouter.delete("/delete/:id/folder", validateToken, deleteFolder);
 
 export default folderRouter;

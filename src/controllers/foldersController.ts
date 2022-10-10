@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
-import client from "../database/postgres.js";
 import dotenv from "dotenv";
+import {
+  createNewFolder,
+  getAllFolders,
+  removeFolder,
+} from "../services/foldersService.js";
 
 dotenv.config();
 
@@ -8,42 +12,21 @@ export async function addFolder(req: Request, res: Response) {
   const { name } = req.body;
   const { userId } = res.locals.userSession;
 
-  try {
-    await client.folders.create({
-      data: { name, userId },
-    });
-    const folders = await client.folders.findMany({
-      where: { userId },
-    });
-    res.status(201).send(folders);
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  const folders = await createNewFolder(name, userId);
+  res.status(201).send(folders);
 }
 
-export async function getFolder(req: Request, res: Response) {
+export async function getFolders(req: Request, res: Response) {
   const { userId } = res.locals.userSession;
 
-  try {
-    const notes = await client.folders.findMany({
-      where: { userId },
-    });
-    res.status(200).send(notes);
-  } catch (err) {
-    res.status(500).send(err);
-  }
+  const folders = await getAllFolders(userId);
+  res.status(200).send(folders);
 }
 
-export async function deleteFolders(req: Request, res: Response) {
+export async function deleteFolder(req: Request, res: Response) {
   const { userId } = res.locals.userSession;
   const id = Number(req.params.id);
 
-  try {
-    await client.folders.delete({
-      where: { id },
-    });
-    res.sendStatus(200);
-  } catch (err) {
-    res.sendStatus(500);
-  }
+  await removeFolder(id, userId);
+  res.sendStatus(200);
 }
